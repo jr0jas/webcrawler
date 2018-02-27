@@ -29,9 +29,8 @@ public class SpiderLeg {
 	public boolean crawl(String url) {
 		try {
 			Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-			Document htmlDocument = connection.maxBodySize(0).timeout(5000).get();
+			Document htmlDocument = connection.get();
 			this.htmlDocument = htmlDocument;
-
 			if (connection.response().statusCode() == 200) // 200 is the HTTP OK
 															// status code
 															// indicating that
@@ -44,11 +43,9 @@ public class SpiderLeg {
 				System.out.println("**Failure** Retrieved something other than HTML");
 				return false;
 			}
-
-			Elements linksOnPage = htmlDocument.select("a[href*=/about/]");
+			Elements linksOnPage = htmlDocument.select("a[href]");
 			System.out.println("Found (" + linksOnPage.size() + ") links");
-
-			for (Element link : linksOnPage) {
+			for (org.jsoup.nodes.Element link : linksOnPage) {
 				this.links.add(link.absUrl("href"));
 			}
 			return true;
@@ -75,13 +72,13 @@ public class SpiderLeg {
 		}
 		System.out.println("Searching for the word " + searchWord + "...");
 		String bodyText = this.htmlDocument.body().text();
-
-		Element link = this.htmlDocument.select("a[href*=/reaction/]").first();
+		
+		Element link = this.htmlDocument.select("a[href*=/about/]").first();
 		// a with href
 		if (link != null) {
-			System.out.println("Links" + link.attr("href").toString() + "...");
+			System.out.println("Links " + link.attr("href").toString() + "...");
 		}
-
+		
 		return bodyText.toLowerCase().contains(searchWord.toLowerCase());
 	}
 

@@ -58,5 +58,4 @@ public class Spider {
 		this.pagesVisited.add(nextUrl);
 		return nextUrl;
 	}
-
 }
